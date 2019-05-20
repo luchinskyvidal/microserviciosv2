@@ -1,0 +1,20 @@
+version: "3"
+
+
+services:
+  ceropapel-postcreadocumento:
+    command: [ "npm", "start" ]
+    build: . 
+    image: ceropapel/post-creadocumento:crea-documento
+    container_name: ceropapel-postcreadocumento
+    network_mode: bridge
+    ports:
+      - "5006:5006"
+    volumes: 
+      - .:/opt/app
+      - /opt/app/node_modules
+
+
+
+      
+      

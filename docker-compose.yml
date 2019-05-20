@@ -1,0 +1,227 @@
+version: '3'
+services:
+  discovery:
+    # image: developer.okta.com/microservice-docker-discovery:0.0.1-SNAPSHOT
+    image: imagen/docker-discovery:0.0.1-SNAPSHOT
+    container_name: eureka
+    # environment:
+    #   - JAVA_OPTS=
+    #     -EUREKA_INSTANCE_HOSTNAME=api-sagdesa
+    #     -EUREKA_INSTANCE_IP_ADDRESS=192.168.151.43
+    ports:
+      - 8761:8761
+
+
+  config:
+    image: imagen/servicio-in-docker-config:0.0.1-SNAPSHOT
+    container_name: config
+    volumes:
+      - ./config-data:/var/config-data
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://discovery:8761/eureka
+        -Dspring.profiles.active=native
+        -Dspring.cloud.config.server.native.search-locations=file:///C:/config
+        # -Dspring.cloud.config.server.git.uri=https://github.com/luchinskyvidal/config-repo
+    depends_on:
+      - discovery
+    expose:
+      - 8888   
+    ports:
+      - 8888:8888
+
+
+     
+  server-zuul: 
+    image: imagen/docker-server-zuul:0.0.1-SNAPSHOT
+    container_name: zuul
+    expose:
+      - 8080 
+      - 8070
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://discovery:8761/eureka
+        -Dspring.application.name=server-zuul
+        -Dspring.cloud.config.uri=http://config:8888
+        -Dzuul.routes.student.path=/persona-api/**
+        -Dzuul.routes.student.url=http://persona-service:8070
+        # -Dzuul.routes.cyprut.path=/cyp-validar-rut/**
+        # -Dzuul.routes.cyprut.url=http://cyp-validar-rut:5000
+        # -Dzuul.routes.cypempresa.path=/cyp-crea-usuario-empresa/**
+        # -Dzuul.routes.cypempresa.url=http://cyp-crea-usuario-empresa:5001
+        # -Dzuul.routes.cypnatural.path=/cyp-crea-usuario-natural/**
+        # -Dzuul.routes.cypnatural.url=http://cyp-crea-usuario-natural:5002
+        # -Dzuul.routes.cpgetestado.path=/cero-papel-get-estado/**
+        # -Dzuul.routes.cpgetestado.url=http://cero-papel-get-estado:5004
+        # -Dzuul.routes.cpgetdocpub.path=/cero-papel-get-doc-publicado/**
+        # -Dzuul.routes.cpgetdocpub.url=http://cero-papel-get-doc-publicado:5005
+        # -Dzuul.routes.cppost.path=/cero-papel-post-crea-documento/**
+        # -Dzuul.routes.cppost.url=http://cero-papel-post-crea-documento:5006
+
+    restart: on-failure
+         
+    depends_on:
+      - persona-service
+      - config
+      - discovery
+
+    
+  persona-service:
+    image: imagen/servicio-in-docker-persona-service:0.0.1-SNAPSHOT
+    container_name: persona-service
+    
+    environment:
+      - JAVA_OPTS=
+        -DCONFIG_SERVER=http://config:8888
+        -DEUREKA_SERVER=http://discovery:8761/eureka
+        -Dspring.profiles.active=default
+        -Dspring.application.name=persona-service
+    #     -Dspring.cloud.config.uri=http://localhost:8888
+    #     -Dspring.profiles.active=default
+    depends_on:
+      - config
+    expose:
+      - 8070
+      - 8080
+    ports:
+      - 8070:8070
+  # cyp-validar-rut:
+  #   # image: imagen/servicio-in-docker-cyp-valida-rut:0.0.1-SNAPSHOT
+  #   build: cyp-validar-rut
+  #   container_name: cyp-validar-rut
+      
+  #   environment:
+  #     DISCOVERY_HOST: discovery
+  #     PORT: 8761
+  #   volumes: 
+  #       - .:/cyp-validar-rut/opt/app
+  #       - /cyp-validar-rut/opt/app/node_modules
+  #   depends_on:
+  #       - config
+  #       - discovery
+  #     # expose:
+  #     #   - 8070
+  #     #   - 8080
+  #   ports:
+  #       - "5000:5000"
+
+  # cyp-crea-usuario-empresa:
+  #   # image: imagen/servicio-in-docker-cyp-valida-rut:0.0.1-SNAPSHOT
+  #   build: cyp-crea-usuario-empresa
+  #   container_name: cyp-crea-usuario-empresa
+      
+  #   environment:
+  #     DISCOVERY_HOST: discovery
+  #     PORT: 8761
+  #   volumes: 
+  #       - .:/cyp-crea-usuario-empresa/opt/app
+  #       - /cyp-crea-usuario-empresa/opt/app/node_modules
+  #   depends_on:
+  #       - config
+  #       - discovery
+  #     # expose:
+  #     #   - 8070
+  #     #   - 8080
+  #   ports:
+  #       - "5001:5001"
+      
+  # cyp-crea-usuario-natural:
+  #   # image: imagen/servicio-in-docker-cyp-valida-rut:0.0.1-SNAPSHOT
+  #   build: cyp-crea-usuario-natural
+  #   container_name: cyp-crea-usuario-natural
+      
+  #   environment:
+  #     DISCOVERY_HOST: discovery
+  #     PORT: 8761
+  #   volumes: 
+  #       - .:/cyp-crea-usuario-natural/opt/app
+  #       - /cyp-crea-usuario-natural/opt/app/node_modules
+  #   depends_on:
+  #       - config
+  #       - discovery
+  #     # expose:
+  #     #   - 8070
+  #     #   - 8080
+  #   ports:
+  #       - "5002:5002"
+
+  # cero-papel-get-estado:
+  #   # image: imagen/servicio-in-docker-cyp-valida-rut:0.0.1-SNAPSHOT
+  #   build: cero-papel/cero-papel-get-estado
+  #   container_name: cero-papel-get-estado
+      
+  #   environment:
+  #     DISCOVERY_HOST: discovery
+  #     PORT: 8761
+  #   volumes: 
+  #       - .:/cero-papel/cero-papel-get-estado/opt/app
+  #       - /cero-papel/cero-papel-get-estado/opt/app/node_modules
+  #   depends_on:
+  #       - config
+  #       - discovery
+  #     # expose:
+  #     #   - 8070
+  #     #   - 8080
+  #   ports:
+  #       - "5004:5004"
+
+  # cero-papel-get-doc-publicado:
+  #   # image: imagen/servicio-in-docker-cyp-valida-rut:0.0.1-SNAPSHOT
+  #   build: cero-papel/cero-papel-get-doc-publicado
+  #   container_name: cero-papel-get-doc-publicado
+      
+  #   environment:
+  #     DISCOVERY_HOST: discovery
+  #     PORT: 8761
+  #   volumes: 
+  #       - .:/cero-papel/cero-papel-get-doc-publicado/opt/app
+  #       - /cero-papel/cero-papel-get-doc-publicado/opt/app/node_modules
+  #   depends_on:
+  #       - config
+  #       - discovery
+  #     # expose:
+  #     #   - 8070
+  #     #   - 8080
+  #   ports:
+  #       - "5005:5005"
+
+  # cero-papel-post-crea-documento:
+  #   # image: imagen/servicio-in-docker-cyp-valida-rut:0.0.1-SNAPSHOT
+  #   build: cero-papel/cero-papel-post-crea-documento
+  #   container_name: cero-papel-post-crea-documento
+      
+  #   environment:
+  #     DISCOVERY_HOST: discovery
+  #     PORT: 8761
+  #   volumes: 
+  #       - .:/cero-papel/cero-papel-post-crea-documento/opt/app
+  #       - /cero-papel/cero-papel-post-crea-documento/opt/app/node_modules
+  #   depends_on:
+  #       - config
+  #       - discovery
+  #     # expose:
+  #     #   - 8070
+  #     #   - 8080
+  #   ports:
+  #       - "5006:5006"
+
+      
+      
+   
+    
+
+    
+    
+    
+
+# services:
+  
+#     build: .
+    
+#     ports:
+#       - "5000:5000"
+#     volumes: 
+#       - .:/opt/app
+#       - /opt/app/node_modules

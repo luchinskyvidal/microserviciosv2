@@ -1,0 +1,89 @@
+ 
+spring:
+  application:
+    name: server-zuul
+#  cloud:
+#    config:
+#      discovery:
+#        enabled: true
+#        serviceId: CONFIGSERVER
+#      failFast: true
+#  cloud:
+#    config:
+#      uri: ${CONFIG_SERVER:http://localhost:8888/}
+#puerto 
+server:
+  port: 8080
+#lee del cliente student-service 
+zuul:
+   sensitiveHeaders: Cookie,Set-Cookie
+   routes:
+#      spring-security-oauth-resource:
+#         path: /spring-security-oauth-resource/**
+#         url: http://localhost:8082/spring-security-oauth-resource
+#      paso:
+#         path: /paso/**
+#         url: https://desasso.sag.gob.cl:8443/auth
+# https://desasso.sag.gob.cl:8443
+#         url: http://localhost:8081/spring-security-oauth-server/oauth
+         
+      persona:
+#         url: http://localhost:8090
+         path: /persona-api/**
+         service-id: PERSONA-SERVICE
+#         url: http://localhost:8070
+
+
+
+      cypvalidarut:
+         path: /cyp-validar-rut/**
+        #  service-id: CYP-VALIDAR-RUT
+         url: http://localhost:5000
+      cypcreaempre:
+#         url: http://localhost:8090
+         path: /cyp-crea-usuario-empresa/**
+#         service-id: CYP-CREA-USUARIO-EMPRESA
+         url: http://localhost:5001
+      cypcreausernatural:
+#         url: http://localhost:8090
+         path: /cyp-crea-usuario-natural/**
+#         service-id: CYP-CREA-USUARIO-NATURAL
+         url: http://localhost:5002
+         
+         
+      cpgetdocpub:
+         path: /cero-papel-get-doc-publicado/**
+#         service-id: CERO-PAPEL-GET-DOC-PUBLICADO
+         url: http://localhost:5004
+      cpgetestadodoc:
+         path: /cero-papel-get-estado/**
+#         service-id: CERO-PAPEL-GET-ESTADO
+         url: http://localhost:5005
+      cppostcreadocum:
+#         url: http://localhost:8090
+         path: /cero-papel-post-crea-documento/**
+#         service-id: CERO-PAPEL-POST-CREA-DOCUMENTO
+         url: http://localhost:5006
+         
+management:
+   endpoints:
+      web:
+         exposure:
+            include: "*"        
+#logging:
+#   level:
+#      org:
+#         springframework:
+#            web: trace
+#         apache: trace         
+
+#para habilitar Ribbon
+ribbon:
+   eureka:
+      enabled: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+  instance:
+     hostname: localhost

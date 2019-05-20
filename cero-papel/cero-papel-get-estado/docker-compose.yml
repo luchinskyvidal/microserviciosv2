@@ -1,0 +1,20 @@
+version: "3"
+
+
+services:
+  ceropapel-getestado:
+    command: [ "npm", "start" ]
+    build: . 
+    image: ceropapel/get-estado:obtiene-estado
+    container_name: ceropapel-getestado
+    network_mode: bridge
+    ports:
+      - "5004:5004"
+    volumes: 
+      - .:/opt/app
+      - /opt/app/node_modules
+
+
+
+      
+      

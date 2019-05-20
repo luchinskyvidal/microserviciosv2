@@ -1,0 +1,20 @@
+{
+  "name": "eureka-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "eureka-js-client": "^4.3.0",
+    "express": "^4.16.4",
+    "node-eureka-client": "^1.0.1",
+    "restify": "^8.3.2",
+    "simplified-hystrixjs": "^1.0.16",
+    "soap": "^0.26.0"
+  }
+}

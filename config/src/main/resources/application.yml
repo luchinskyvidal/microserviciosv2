@@ -1,0 +1,43 @@
+spring:
+   profiles:
+    active: native
+   application:
+      name: CONFIGSERVER
+   
+#   cloud:
+#      config:
+#         server:
+#            git:
+#               uri: https://github.com/luchinskyvidal/config-repo
+   cloud:
+     config:
+       server:
+         native:
+           search-locations: file:///C:/config
+                  
+eureka:
+   client:
+      serviceUrl:
+         defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+   instance:
+#      preferIpAddress: true 
+      hostname: localhost
+
+server:
+   port: 8888
+#file:///C:\Users\luis.vidalb\Documents\station\Infraestructura\infra2\ambiente-enlazado\okta-spring-microservices-docker-example-master\config\src\main\resources\config-repo
+
+#test
+#server:
+#  port: 8888
+#spring:
+#  application:
+#    name: CONFIGSERVER
+#  cloud:
+#    config:
+#      server:
+#        git:
+#          uri:
+#          uri: classpath/config-repo
+#          searchPaths: config-repo
+#             classpath: config-repo

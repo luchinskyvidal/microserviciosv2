@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: persona-service
+  cloud:
+#    config:
+#      enabled: false
+#      discovery:
+#        enabled: true
+#        serviceId: PERSONA-SERVICE
+#  cloud:
+#    config:
+#     uri: ${CONFIG_SERVER:http://localhost:8888}
+eureka:
+   client:
+      serviceUrl:
+         defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+
+   instance:
+      hostname: localhost
+#puerto 
+server:
+  port: 8070
+#registro con eureka
+management:
+   endpoints:
+      web:
+         exposure:
+            include: "*"   
+

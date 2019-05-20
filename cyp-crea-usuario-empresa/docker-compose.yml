@@ -1,0 +1,20 @@
+version: "3"
+
+
+services:
+  clientecreacionusuarioempresa:
+    command: [ "npm", "start" ]
+    build: .
+    image: nodejs/crea-usuario-empresa:crea-empresa
+    container_name: creacion-empresa
+    network_mode: bridge
+    ports:
+      - "5001:5001"
+    volumes: 
+      - .:/opt/app
+      - /opt/app/node_modules
+
+
+
+      
+      

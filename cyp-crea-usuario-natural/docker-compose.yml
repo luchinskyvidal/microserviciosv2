@@ -1,0 +1,20 @@
+version: "3"
+
+
+services:
+  clientecreacionusuariopnatural:
+    command: [ "npm", "start" ]
+    build: .
+    image: nodejs/crea-usuario-natural:crea-persona
+    container_name: creacion-persona
+    network_mode: bridge
+    ports:
+      - "5002:5002"
+    volumes: 
+      - .:/opt/app
+      - /opt/app/node_modules
+
+
+
+      
+      

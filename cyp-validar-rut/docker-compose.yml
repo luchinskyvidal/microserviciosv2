@@ -1,0 +1,30 @@
+version: '3'
+services:
+  
+    # build: .
+    
+    # ports:
+    #   - "5000:5000"
+    # volumes: 
+    #   - .:/opt/app
+    #   - /opt/app/node_modules
+
+  cyp-valida-rut:
+      image: imagen/servicio-in-docker-cyp-valida-rut:0.0.1-SNAPSHOT
+      # build: .
+      container_name: cyp-valida-rut
+      
+      # environment:
+        # DISCOVERY_URL: http://discovery:8761/eureka
+        # PORT: 5000
+
+      volumes: 
+        - .:/opt/app
+        - /opt/app/node_modules
+
+      ports:
+        - 5000:5000  
+
+
+      
+      
